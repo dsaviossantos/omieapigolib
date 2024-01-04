@@ -8,7 +8,19 @@ import (
 )
 
 func main() {
-	omie_api.Config.SetCredentials(os.Getenv("OMIE_API_KEY"), os.Getenv("OMIE_API_SECRET"))
-	r := omie_api.Get.ListCompanies()
-	fmt.Println(string(r))
+	// [x] Set your credentials
+	// [] Rate limit setups
+	// [] Verify RL permissions
+	// [] Make request
+	// [] True: Make request | False: Wait then make request
+	// [] Receive response
+	// [] Parse response
+	// [] Error: Handle OmieError | Success: Continue
+	// [] ErrorHandler: What to do next? Wait and try again? Return error?
+	// [] Success: Return response
+	key := os.Getenv("OMIE_API_KEY")
+	secret := os.Getenv("OMIE_API_SECRET")
+	omie_api.Config.SetCredentials(key, secret)
+	r := omie_api.Get.ListCompanies(1, 50)
+	fmt.Println(r.EmpresasCadastro[0].CodigoEmpresa)
 }

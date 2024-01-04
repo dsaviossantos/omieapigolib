@@ -1,5 +1,7 @@
 package omie_api
 
+import "log/slog"
+
 // Credentials for Omie API
 type Credentials struct {
 	Key    string
@@ -10,6 +12,7 @@ type Credentials struct {
 func (c *Credentials) SetCredentials(key string, secret string) {
 	c.Key = key
 	c.Secret = secret
+	slog.Info("Credentials setted")
 }
 
 // Config - Global Config for Omie API
