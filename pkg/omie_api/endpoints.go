@@ -1,11 +1,9 @@
 package omie_api
 
 import (
-	"bytes"
 	"encoding/json"
 	"io"
 	"log/slog"
-	"net/http"
 )
 
 // Params - Params for Omie API
@@ -29,7 +27,7 @@ var Get = Payload{
 //
 // https://app.omie.com.br/api/v1/geral/empresas/#ListarEmpresas
 //
-// page: Página a ser exibida
+// page: Número da Página a ser exibida
 //
 // nRegistriesPage: Número de registros por página
 func (o Payload) ListCompanies(page, nRegistriesPage int) CompaniesList {
@@ -41,21 +39,9 @@ func (o Payload) ListCompanies(page, nRegistriesPage int) CompaniesList {
 	p.addParam("registros_por_pagina", nRegistriesPage)
 
 	o.body = NewBody(method, p.toList())
-	b := bytes.NewReader(o.body)
 
 	slog.Info("Requesting:", "URL", o.baseUrl+"/v1/geral/empresas/", "METHOD", method, "PARAMS", p)
-
-	if RateLimits.ipRateLimitRemaining <= 0 || RateLimits.appKeyMethodRateLimitRemaining <= 0 || RateLimits.errors >= 10 {
-		slog.Info("Rate Limit Exceeded", "LOCATION", "endpoints.go:48", "MSG", "IP Rate Limit Exceeded")
-		return cl
-	}
-
-	response, errHttp := http.Post(o.baseUrl+"/v1/geral/empresas/", "application/json", b)
-	if errHttp != nil {
-		slog.Error("HTTP Request", "LOCATION", "endpoints.go:48", "MSG", errHttp)
-	}
-	slog.Info("Response:", "Status", response.Status, "StatusCode", response.StatusCode)
-	defer response.Body.Close()
+	response := RequestWithRetry(o.baseUrl+"/v1/geral/empresas/", o.body, 3)
 	r, errRead := io.ReadAll(response.Body)
 	if errRead != nil {
 		slog.Error("IO Read ResponseBody", "LOCATION", "endpoints.go:53", "MSG", errRead, "CAUSE", response.Body)

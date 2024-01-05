@@ -13,7 +13,7 @@ type omieApiRateLimits struct {
 	// Blocking Time
 	block int
 	// Methods being executed
-	executingMethods []string
+	executingMethods [4]string
 }
 
 // AddMethod - Add method to executingMethods
@@ -22,10 +22,13 @@ type omieApiRateLimits struct {
 func (o *omieApiRateLimits) AddMethod(method string) int {
 	if len(o.executingMethods) <= 4 {
 		for i := range o.executingMethods {
+			var emptySpot int
 			if o.executingMethods[i] == method {
 				return 1
+			} else if o.executingMethods[i] == "" {
+				emptySpot = i
 			} else {
-				o.executingMethods = append(o.executingMethods, method)
+				o.executingMethods[emptySpot] = method
 				return 0
 			}
 		}
@@ -37,7 +40,6 @@ func (o *omieApiRateLimits) AddMethod(method string) int {
 func (o *omieApiRateLimits) RemoveMethod(method string) {
 	for i := range o.executingMethods {
 		if o.executingMethods[i] == method {
-			o.executingMethods = append(o.executingMethods[:i], o.executingMethods[i+1:]...)
 		}
 	}
 }
@@ -52,7 +54,7 @@ func omieApiRateLimitsFactory() *omieApiRateLimits {
 		appKeyMethodRateLimitRemaining: 240,
 		errors:                         10,
 		block:                          0,
-		executingMethods:               []string{},
+		executingMethods:               [4]string{},
 	}
 }
 

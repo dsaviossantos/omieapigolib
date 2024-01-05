@@ -1,6 +1,8 @@
 package omie_api
 
-type ErrorHandling struct {
-	ErrorCode    string `json:"codigo_erro"`
-	ErrorMessage string `json:"descricao_erro"`
+type OmieError struct {
+	Code        int    `json:"code"`
+	Description string `json:"description"`
+	Referer     string `json:"referer"`
+	Fatal       bool   `json:"fatal"`
 }

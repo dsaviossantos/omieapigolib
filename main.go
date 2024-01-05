@@ -19,6 +19,7 @@ func main() {
 	// [] Error: Handle OmieError | Success: Continue
 	// [] ErrorHandler: What to do next? Wait and try again? Return error?
 	// [] Success: Return response
+
 	start := time.Now()
 	key := os.Getenv("OMIE_API_KEY")
 	secret := os.Getenv("OMIE_API_SECRET")
