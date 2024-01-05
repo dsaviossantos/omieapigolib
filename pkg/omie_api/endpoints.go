@@ -45,6 +45,11 @@ func (o Payload) ListCompanies(page, nRegistriesPage int) CompaniesList {
 
 	slog.Info("Requesting:", "URL", o.baseUrl+"/v1/geral/empresas/", "METHOD", method, "PARAMS", p)
 
+	if RateLimits.ipRateLimitRemaining <= 0 || RateLimits.appKeyMethodRateLimitRemaining <= 0 || RateLimits.errors >= 10 {
+		slog.Info("Rate Limit Exceeded", "LOCATION", "endpoints.go:48", "MSG", "IP Rate Limit Exceeded")
+		return cl
+	}
+
 	response, errHttp := http.Post(o.baseUrl+"/v1/geral/empresas/", "application/json", b)
 	if errHttp != nil {
 		slog.Error("HTTP Request", "LOCATION", "endpoints.go:48", "MSG", errHttp)
